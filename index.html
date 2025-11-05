@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Painel Power BI TV</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
+    iframe { width: 100vw; height: 100vh; border: none; display: block; }
+    #overlay { position: fixed; right: 12px; bottom: 12px; background: rgba(0,0,0,0.45); color: #fff; padding: 6px 10px; border-radius: 6px; font-family: sans-serif; font-size: 13px;}
+  </style>
+</head>
+<body>
+  <iframe id="frame" src="https://app.powerbi.com/reportEmbed?reportId=8fae0177-1a7e-453b-b554-1f49fd973cb4&autoAuth=true&ctid=f79b45bf-444f-4075-8bfa-542448657ca4" allowfullscreen></iframe>
+  <div id="overlay">Rotação a cada 8s - Power BI (logado)</div>
+
+  <script>
+    // Coloque aqui outros links 'reportEmbed?...' se quiser rotacionar mais de 1 relatório
+    const telas = [
+      "https://app.powerbi.com/reportEmbed?reportId=8fae0177-1a7e-453b-b554-1f49fd973cb4&autoAuth=true&ctid=f79b45bf-444f-4075-8bfa-542448657ca4"
+      // ,"https://app.powerbi.com/reportEmbed?reportId=OUTRO-REPORT-ID&autoAuth=true&ctid=f79b45bf-444f-4075-8bfa-542448657ca4"
+    ];
+    const intervalo = 8000; // 8000ms = 8s
+    let i = 0;
+    const iframe = document.getElementById('frame');
+    function proximaTela() {
+      i = (i + 1) % telas.length;
+      iframe.src = telas[i];
+    }
+    if (telas.length > 1) setInterval(proximaTela, intervalo);
+
+    // recarregar a cada 4 horas para evitar travamentos do browser da TV (opcional)
+    setTimeout(() => location.reload(), 1000 * 60 * 60 * 4);
+  </script>
+</body>
+</html>

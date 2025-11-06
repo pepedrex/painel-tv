@@ -17,7 +17,7 @@
     /* Iframe ocupa tudo, exceto o rodapé */
     iframe {
       width: 100vw;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 70px);
       border: none;
       display: block;
     }
@@ -27,44 +27,60 @@
       position: fixed;
       bottom: 0;
       width: 100%;
-      height: 60px;
-      background: linear-gradient(to right, #004b8d, #007bff);
+      height: 70px;
+      background: linear-gradient(to right, #003b7a, #007bff);
       color: white;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 30px;
       border-top: 3px solid #00aaff;
-      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.6);
+      box-sizing: border-box;
     }
 
+    /* Área da esquerda (aviso + texto) */
     .left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
       font-size: 1.1em;
+      max-width: 80%; /* evita apertar a direita */
     }
 
+    /* “ATENÇÃO” piscando */
     .left .live {
       background: #ff3131;
       color: white;
-      padding: 4px 8px;
+      padding: 6px 10px;
       border-radius: 4px;
       font-weight: bold;
       text-transform: uppercase;
+      animation: piscar 1.2s infinite;
     }
 
+    @keyframes piscar {
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0.4; }
+    }
+
+    /* Texto do aviso */
     .headline {
       font-weight: 500;
-      white-space: pre-line; /* ✅ Mantém quebras de linha */
+      white-space: pre-line; /* mantém as quebras do código */
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
     }
 
+    /* Área da direita (hora + temperatura) */
     .right {
       display: flex;
       align-items: center;
-      gap: 20px;
-      font-size: 1.1em;
+      gap: 25px;
+      font-size: 1.2em;
       font-weight: 500;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -78,7 +94,8 @@
     <div class="left">
       <div class="live">ATENÇÃO</div>
       <div class="headline">
-        Informamos que a equipe de Segurança da Empresa passará a aplicar advertências em casos de uso de celular durante a operação.
+        Informamos que a equipe de Segurança da Empresa passará a aplicar advertências
+        em casos de uso de celular durante a operação.
         Solicitamos que todos evitem o uso do aparelho nesse ambiente.
       </div>
     </div>
@@ -124,4 +141,3 @@
   </script>
 </body>
 </html>
-

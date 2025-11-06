@@ -1,107 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Azul - Jornal TV</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #001f3f;
-    color: white;
-    overflow: hidden;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Painel Power BI TV</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
 
-  /* Conteúdo principal */
-  .content {
-    height: calc(100vh - 70px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=60') center/cover;
-  }
-  .content h1 {
-    font-size: 3em;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
-  }
+    /* Iframe ocupa tudo, exceto o rodapé */
+    iframe {
+      width: 100vw;
+      height: calc(100vh - 60px);
+      border: none;
+      display: block;
+    }
 
-  /* Barra inferior estilo "Jornal" */
-  .ticker {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 70px;
-    background: linear-gradient(to right, #004b8d, #007bff);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    border-top: 3px solid #00aaff;
-  }
+    /* Barra inferior estilo TV */
+    .ticker {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to right, #004b8d, #007bff);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-top: 3px solid #00aaff;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
+    }
 
-  .left-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1em;
+    }
 
-  .left-info .live {
-    background: #ff3131;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-  }
+    .left .live {
+      background: #ff3131;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
-  .left-info .headline {
-    font-size: 1.1em;
-    font-weight: 500;
-  }
+    .headline {
+      font-weight: 500;
+    }
 
-  .right-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-weight: 500;
-  }
-
-  .clock, .temp {
-    font-size: 1.1em;
-  }
-</style>
+    .right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
 
-<div class="content">
-  <h1>Bem-vindo ao Painel de Notícias Azul</h1>
-</div>
+  <!-- Iframe Power BI -->
+  <iframe id="frame" allowfullscreen></iframe>
 
-<div class="ticker">
-  <div class="left-info">
-    <div class="live">AO VIVO</div>
-    <div class="headline">China critica sanções e alerta para crise global</div>
+  <!-- Barra inferior -->
+  <div class="ticker">
+    <div class="left">
+      <div class="live">ATENÇÃO</div>
+      <div class="headline">
+        Informamos que a equipe de Segurança da Empresa passará a aplicar advertências
+        em casos de uso de celular durante a operação. Solicitamos que todos evitem o uso
+        do aparelho nesse ambiente.
+      </div>
+    </div>
+    <div class="right">
+      <div id="temp">26°C</div>
+      <div id="clock">--:--</div>
+    </div>
   </div>
-  <div class="right-info">
-    <div class="temp" id="temp">--°C</div>
-    <div class="clock" id="clock">--:--</div>
-  </div>
-</div>
 
-<script>
-  // Relógio em tempo real
-  function atualizarHora() {
-    const agora = new Date();
-    const horas = agora.getHours().toString().padStart(2, '0');
-    const minutos = agora.getMinutes().toString().padStart(2, '0');
-    document.getElementById('clock').textContent = `${horas}:${minutos}`;
-  }
-  setInterval(atualizarHora, 1000);
-  atualizarHora();
+  <script>
+    // URLs das duas abas do mesmo relatório Power BI
+    const telas = [
+      "https://app.powerbi.com/reportEmbed?reportId=8fae0177-1a7e-453b-b554-1f49fd973cb4&pageName=62bf7fbb48377466aa04&autoAuth=true&ctid=f79b45bf-444f-4075-8bfa-542448657ca4&filterPaneEnabled=false&navContentPaneEnabled=false",
+      "https://app.powerbi.com/reportEmbed?reportId=8fae0177-1a7e-453b-b554-1f49fd973cb4&pageName=73f56b8e7c8dad457ff8&autoAuth=true&ctid=f79b45bf-444f-4075-8bfa-542448657ca4&filterPaneEnabled=false&navContentPaneEnabled=false"
+    ];
 
-  // Temperatura — exemplo estático (substitua por API se quiser)
-  document.getElementById('temp').textContent = "26°C";
-</script>
+    const intervalo = 10000; // 10 segundos
+    let i = 0;
+    const iframe = document.getElementById("frame");
 
+    function proximaTela() {
+      i = (i + 1) % telas.length;
+      iframe.src = telas[i];
+    }
+
+    // Inicializa
+    iframe.src = telas[0];
+    if (telas.length > 1) setInterval(proximaTela, intervalo);
+
+    // Recarrega a cada 4h (para evitar travamentos)
+    setTimeout(() => location.reload(), 1000 * 60 * 60 * 4);
+
+    // Atualiza hora
+    function atualizarHora() {
+      const agora = new Date();
+      const horas = agora.getHours().toString().padStart(2, '0');
+      const minutos = agora.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = `${horas}:${minutos}`;
+    }
+
+    setInterval(atualizarHora, 1000);
+    atualizarHora();
+  </script>
 </body>
 </html>

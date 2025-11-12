@@ -12,15 +12,18 @@
       overflow: hidden;
       background: #000;
       font-family: "Segoe UI", Arial, sans-serif;
+      color: white;
     }
 
     iframe {
-      width: 100vw;
+      width: calc(100vw - 280px);
       height: calc(100vh - 70px);
       border: none;
       display: block;
+      margin-left: 280px; /* espaço para a barra lateral */
     }
 
+    /* === Barra inferior === */
     .ticker {
       position: fixed;
       bottom: 0;
@@ -35,6 +38,7 @@
       border-top: 3px solid #00aaff;
       box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.6);
       box-sizing: border-box;
+      z-index: 10;
     }
 
     .left {
@@ -84,9 +88,78 @@
       margin-right: 4px;
       opacity: 0.9;
     }
+
+    /* === Barra lateral === */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 280px;
+      height: calc(100vh - 70px);
+      background: linear-gradient(to bottom, #002b5c, #004c9a);
+      border-right: 3px solid #00aaff;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.6);
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      z-index: 5;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 1.3em;
+      color: #e6f2ff;
+      margin-bottom: 15px;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+      font-size: 1em;
+    }
+
+    .calendar div {
+      padding: 6px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .calendar .today {
+      background: #00aaff;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(0, 170, 255, 0.7);
+    }
+
+    .calendar .holiday {
+      background: #ff3131;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(255, 49, 49, 0.7);
+    }
+
+    .holiday-note {
+      margin-top: 20px;
+      font-size: 1em;
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+
+  <div class="sidebar">
+    <h2 id="month-year"></h2>
+    <div class="calendar" id="calendar"></div>
+    <div class="holiday-note" id="holiday-note"></div>
+  </div>
 
   <iframe id="frame" allowfullscreen></iframe>
 
@@ -132,10 +205,52 @@
       const minutos = agora.getMinutes().toString().padStart(2, '0');
       document.getElementById('clock').textContent = `${horas}:${minutos}`;
     }
-
     setInterval(atualizarHora, 1000);
     atualizarHora();
+
+    // === CALENDÁRIO ===
+    const calendar = document.getElementById('calendar');
+    const monthYear = document.getElementById('month-year');
+    const holidayNote = document.getElementById('holiday-note');
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+
+    const monthNames = [
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
+    monthYear.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    // === SELECIONA A DATA DO FERIADO AQUI ===
+    const holidayDay = 29; // 🔴 Dia 29 é o feriado
+
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement("div");
+      calendar.appendChild(empty);
+    }
+
+    for (let day = 1; day <= lastDate; day++) {
+      const div = document.createElement("div");
+      div.textContent = day;
+
+      if (day === today.getDate()) {
+        div.classList.add("today");
+      }
+
+      if (day === holidayDay) {
+        div.classList.add("holiday");
+      }
+
+      calendar.appendChild(div);
+    }
+
+    holidayNote.textContent = `Dia ${holidayDay} é feriado 🎉`;
   </script>
+
 </body>
 </html>
-

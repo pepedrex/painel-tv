@@ -24,10 +24,14 @@
       margin-left: 280px;
     }
 
-    /* === Barra inferior === */
+    /* =========================
+       BARRA INFERIOR
+    ========================= */
+
     .ticker {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100%;
       height: 70px;
       background: linear-gradient(to right, #003b7a, #007bff);
@@ -59,6 +63,7 @@
       font-weight: bold;
       text-transform: uppercase;
       animation: piscar 1.2s infinite;
+      flex-shrink: 0;
     }
 
     @keyframes piscar {
@@ -87,6 +92,7 @@
       padding-right: 10px;
       color: #e6f2ff;
       text-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
     }
 
     .icon {
@@ -95,7 +101,10 @@
       opacity: 0.9;
     }
 
-    /* === Barra lateral === */
+    /* =========================
+       BARRA LATERAL
+    ========================= */
+
     .sidebar {
       position: fixed;
       left: 0;
@@ -104,7 +113,7 @@
       height: calc(100vh - 70px);
       background: linear-gradient(to bottom, #002b5c, #004c9a);
       border-right: 3px solid #00aaff;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.6);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.6);
       padding: 20px;
       box-sizing: border-box;
       display: flex;
@@ -152,13 +161,16 @@
     .holiday-note {
       margin-top: 20px;
       font-size: 1em;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       padding: 10px;
       border-radius: 6px;
       text-align: center;
     }
 
-    /* === Mensagem de carregamento/erro === */
+    /* =========================
+       STATUS
+    ========================= */
+
     #status {
       position: fixed;
       top: 50%;
@@ -178,7 +190,12 @@
 
 <body>
 
+  <!-- =========================
+       CALENDÁRIO
+  ========================= -->
+
   <div class="sidebar" id="sidebar">
+
     <h2 id="month-year"></h2>
 
     <div
@@ -190,8 +207,13 @@
       class="holiday-note"
       id="holiday-note">
     </div>
+
   </div>
 
+
+  <!-- =========================
+       POWER BI
+  ========================= -->
 
   <iframe
     id="frame"
@@ -200,17 +222,29 @@
   </iframe>
 
 
+  <!-- =========================
+       STATUS
+  ========================= -->
+
   <div id="status"></div>
 
+
+  <!-- =========================
+       BARRA INFERIOR
+  ========================= -->
 
   <div class="ticker">
 
     <div class="left">
 
-      <div class="live">
+      <!-- ATENÇÃO FIXO -->
+      <div
+        class="live"
+        id="live-label">
         ATENÇÃO
       </div>
 
+      <!-- MENSAGEM VEM DO ADMIN -->
       <div
         class="headline"
         id="headline">
@@ -219,6 +253,8 @@
 
     </div>
 
+
+    <!-- RELÓGIO -->
 
     <div
       class="right"
@@ -378,6 +414,7 @@
           await supabaseGet(
             "configuracoes" +
             "?select=id,intervalo_powerbi,reload_horas,mensagem,calendario,relogio" +
+            "&order=id.asc" +
             "&limit=1"
           );
 
@@ -431,12 +468,14 @@
 
 
         /* =====================================================
-           MENSAGEM
+           MENSAGEM DO ADMIN
         ===================================================== */
 
+        const mensagem =
+          novaConfiguracao.mensagem ?? "";
+
         headline.textContent =
-          novaConfiguracao.mensagem ||
-          "";
+          mensagem;
 
 
         /* =====================================================
@@ -514,17 +553,13 @@
           novaConfiguracao
         );
 
+
       } catch (erro) {
 
         console.error(
           "Erro ao carregar configurações:",
           erro
         );
-
-        /*
-         * Não derruba a TV se o Supabase
-         * estiver temporariamente indisponível.
-         */
 
       }
 
@@ -902,11 +937,6 @@
         ).getDate();
 
 
-      /*
-       * Mantido conforme seu calendário atual.
-       * Dia 12 é o destaque vermelho.
-       */
-
       const holidayDay = 12;
 
 
@@ -987,13 +1017,7 @@
 
 
     /*
-     * Verifica o Supabase a cada 30 segundos.
-     *
-     * Assim, se você alterar:
-     *
-     * 150 → 30 segundos
-     *
-     * a TV passa a usar 30 segundos.
+     * Atualiza as configurações a cada 30 segundos.
      */
 
     setInterval(
@@ -1010,17 +1034,7 @@
 
       montarCalendario();
 
-
-      /*
-       * Primeiro carrega as configurações.
-       */
-
       await carregarConfiguracoes();
-
-
-      /*
-       * Depois carrega as telas.
-       */
 
       await carregarTelas();
 

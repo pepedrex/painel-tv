@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Administração — Painel TV</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
+
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -23,6 +32,7 @@
     .hidden {
       display: none !important;
     }
+
 
     /* =========================
        LOGIN
@@ -69,6 +79,11 @@
       margin: 0 0 30px;
     }
 
+
+    /* =========================
+       FORMULÁRIOS
+    ========================= */
+
     label {
       display: block;
       margin-bottom: 7px;
@@ -101,6 +116,11 @@
       margin-bottom: 18px;
     }
 
+
+    /* =========================
+       BOTÕES
+    ========================= */
+
     button {
       border: 0;
       border-radius: 8px;
@@ -114,6 +134,12 @@
     button:hover {
       transform: translateY(-1px);
       filter: brightness(1.08);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .btn-primary {
@@ -136,11 +162,6 @@
       color: white;
     }
 
-    .btn-warning {
-      background: #c78313;
-      color: white;
-    }
-
     .full {
       width: 100%;
     }
@@ -151,6 +172,7 @@
       text-align: center;
       font-size: 14px;
     }
+
 
     /* =========================
        ADMIN
@@ -206,6 +228,11 @@
       padding: 30px;
     }
 
+
+    /* =========================
+       SEÇÕES
+    ========================= */
+
     .section {
       background: #111c2e;
       border: 1px solid #243754;
@@ -232,6 +259,11 @@
       font-size: 13px;
       margin-top: 5px;
     }
+
+
+    /* =========================
+       CONFIGURAÇÕES
+    ========================= */
 
     .settings-grid {
       display: grid;
@@ -268,6 +300,7 @@
       accent-color: #1597ff;
     }
 
+
     /* =========================
        TELAS
     ========================= */
@@ -284,7 +317,13 @@
       border-radius: 10px;
       padding: 15px;
       display: grid;
-      grid-template-columns: 60px 1.2fr 2fr 100px 100px 90px;
+      grid-template-columns:
+        60px
+        1.2fr
+        2fr
+        100px
+        100px
+        90px;
       gap: 12px;
       align-items: center;
     }
@@ -342,6 +381,7 @@
       color: #71849f;
     }
 
+
     /* =========================
        RODAPÉ / STATUS
     ========================= */
@@ -374,13 +414,18 @@
       border-color: #c83b48;
     }
 
+
     /* =========================
        RESPONSIVO
     ========================= */
 
     @media (max-width: 1050px) {
+
       .screen-row {
-        grid-template-columns: 50px 1fr 1fr;
+        grid-template-columns:
+          50px
+          1fr
+          1fr;
       }
 
       .screen-row > .screen-field:nth-child(4),
@@ -389,9 +434,12 @@
       .screen-row > .screen-actions {
         grid-column: span 1;
       }
+
     }
 
+
     @media (max-width: 700px) {
+
       header {
         padding: 0 15px;
       }
@@ -427,30 +475,45 @@
       .bottom-actions {
         flex-direction: column;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- =========================
+
+  <!-- =========================================================
        LOGIN
-  ========================= -->
+  ========================================================= -->
 
   <div id="login-screen">
 
     <div class="login-box">
 
-      <div class="login-logo">📺</div>
+      <div class="login-logo">
+        📺
+      </div>
 
-      <h1>Painel TV</h1>
+      <h1>
+        Painel TV
+      </h1>
 
-      <p>Área administrativa</p>
+      <p>
+        Área administrativa
+      </p>
+
 
       <form id="login-form">
 
         <div class="form-group">
-          <label for="email">E-mail</label>
+
+          <label for="email">
+            E-mail
+          </label>
 
           <input
             type="email"
@@ -458,10 +521,15 @@
             placeholder="Digite seu e-mail"
             required
           >
+
         </div>
 
+
         <div class="form-group">
-          <label for="password">Senha</label>
+
+          <label for="password">
+            Senha
+          </label>
 
           <input
             type="password"
@@ -469,20 +537,22 @@
             placeholder="Digite sua senha"
             required
           >
+
         </div>
+
 
         <button
           type="submit"
           class="btn-primary full"
-          id="login-button"
-        >
+          id="login-button">
           ENTRAR
         </button>
 
+
         <div
           id="login-error"
-          class="error hidden"
-        ></div>
+          class="error hidden">
+        </div>
 
       </form>
 
@@ -491,34 +561,40 @@
   </div>
 
 
-  <!-- =========================
+
+  <!-- =========================================================
        ADMIN
-  ========================= -->
+  ========================================================= -->
 
   <div
     id="admin-screen"
-    class="hidden"
-  >
+    class="hidden">
 
     <header>
 
       <div class="header-title">
-        <span>📺</span>
 
-        <h1>Administração do Painel TV</h1>
+        <span>
+          📺
+        </span>
+
+        <h1>
+          Administração do Painel TV
+        </h1>
+
       </div>
+
 
       <div class="header-user">
 
         <span
           id="user-email"
-          class="user-email"
-        ></span>
+          class="user-email">
+        </span>
 
         <button
           id="logout-button"
-          class="btn-secondary"
-        >
+          class="btn-secondary">
           Sair
         </button>
 
@@ -529,9 +605,10 @@
 
     <main>
 
-      <!-- =========================
+
+      <!-- =====================================================
            CONFIGURAÇÕES
-      ========================= -->
+      ===================================================== -->
 
       <section class="section">
 
@@ -539,7 +616,9 @@
 
           <div>
 
-            <h2>⚙️ Configurações da TV</h2>
+            <h2>
+              ⚙️ Configurações da TV
+            </h2>
 
             <div class="section-description">
               Controle o comportamento geral do painel.
@@ -551,6 +630,9 @@
 
 
         <div class="settings-grid">
+
+
+          <!-- INTERVALO -->
 
           <div class="form-group">
 
@@ -568,6 +650,8 @@
           </div>
 
 
+          <!-- RELOAD -->
+
           <div class="form-group">
 
             <label for="reload">
@@ -584,6 +668,8 @@
           </div>
 
 
+          <!-- MENSAGEM -->
+
           <div class="form-group wide">
 
             <label for="mensagem">
@@ -598,11 +684,16 @@
           </div>
 
 
+          <!-- ELEMENTOS -->
+
           <div class="wide">
 
-            <label>Elementos da TV</label>
+            <label>
+              Elementos da TV
+            </label>
 
             <div class="switch-row">
+
 
               <label class="switch">
 
@@ -611,7 +702,9 @@
                   id="calendario"
                 >
 
-                <span>📅 Calendário</span>
+                <span>
+                  📅 Calendário
+                </span>
 
               </label>
 
@@ -623,13 +716,17 @@
                   id="relogio"
                 >
 
-                <span>🕐 Relógio</span>
+                <span>
+                  🕐 Relógio
+                </span>
 
               </label>
+
 
             </div>
 
           </div>
+
 
         </div>
 
@@ -638,9 +735,10 @@
 
           <button
             class="btn-success"
-            id="save-settings"
-          >
+            id="save-settings">
+
             💾 SALVAR CONFIGURAÇÕES
+
           </button>
 
         </div>
@@ -648,9 +746,10 @@
       </section>
 
 
-      <!-- =========================
+
+      <!-- =====================================================
            TELAS POWER BI
-      ========================= -->
+      ===================================================== -->
 
       <section class="section">
 
@@ -658,7 +757,9 @@
 
           <div>
 
-            <h2>📊 Telas Power BI</h2>
+            <h2>
+              📊 Telas Power BI
+            </h2>
 
             <div class="section-description">
               Gerencie as páginas exibidas na TV.
@@ -666,11 +767,13 @@
 
           </div>
 
+
           <button
             class="btn-primary"
-            id="add-screen"
-          >
+            id="add-screen">
+
             + ADICIONAR TELA
+
           </button>
 
         </div>
@@ -678,8 +781,7 @@
 
         <div
           id="screen-list"
-          class="screen-list"
-        >
+          class="screen-list">
 
           <div class="empty">
             Carregando telas...
@@ -692,27 +794,31 @@
 
           <button
             class="btn-success"
-            id="save-screens"
-          >
+            id="save-screens">
+
             💾 SALVAR TELAS
+
           </button>
 
         </div>
 
       </section>
 
+
     </main>
 
 
     <div
       id="status-message"
-      class="hidden"
-    ></div>
+      class="hidden">
+    </div>
 
   </div>
 
 
+
   <script>
+
 
     /* ==========================================================
        SUPABASE
@@ -723,6 +829,7 @@
 
     const SUPABASE_KEY =
       "sb_publishable_dLvwDfNc_0D3kykWgus6sg_9ssB5Ng2";
+
 
     const supabaseClient =
       window.supabase.createClient(
@@ -764,12 +871,19 @@
 
 
     /* ==========================================================
-       UTILITÁRIO DE STATUS
+       STATUS
     ========================================================== */
 
-    function showStatus(message, type = "success") {
+    let statusTimer = null;
 
-      statusMessage.textContent = message;
+
+    function showStatus(
+      message,
+      type = "success"
+    ) {
+
+      statusMessage.textContent =
+        message;
 
       statusMessage.className = "";
 
@@ -779,17 +893,30 @@
           : "error-status"
       );
 
-      setTimeout(() => {
 
-        statusMessage.classList.add("hidden");
+      if (statusTimer) {
 
-      }, 3500);
+        clearTimeout(
+          statusTimer
+        );
+
+      }
+
+
+      statusTimer =
+        setTimeout(() => {
+
+          statusMessage.classList.add(
+            "hidden"
+          );
+
+        }, 3500);
 
     }
 
 
     /* ==========================================================
-       VERIFICAR LOGIN
+       LOGIN
     ========================================================== */
 
     async function checkSession() {
@@ -798,12 +925,15 @@
         data: {
           session
         }
-      } = await supabaseClient.auth.getSession();
+      } =
+        await supabaseClient.auth.getSession();
 
 
       if (session) {
 
-        await enterAdmin(session);
+        await enterAdmin(
+          session
+        );
 
       } else {
 
@@ -820,9 +950,13 @@
 
     function showLogin() {
 
-      loginScreen.classList.remove("hidden");
+      loginScreen.classList.remove(
+        "hidden"
+      );
 
-      adminScreen.classList.add("hidden");
+      adminScreen.classList.add(
+        "hidden"
+      );
 
     }
 
@@ -831,14 +965,22 @@
        ENTRAR NO ADMIN
     ========================================================== */
 
-    async function enterAdmin(session) {
+    async function enterAdmin(
+      session
+    ) {
 
-      loginScreen.classList.add("hidden");
+      loginScreen.classList.add(
+        "hidden"
+      );
 
-      adminScreen.classList.remove("hidden");
+      adminScreen.classList.remove(
+        "hidden"
+      );
+
 
       userEmail.textContent =
         session.user.email || "";
+
 
       await loadSettings();
 
@@ -857,9 +999,15 @@
 
         event.preventDefault();
 
-        loginError.classList.add("hidden");
 
-        loginButton.disabled = true;
+        loginError.classList.add(
+          "hidden"
+        );
+
+
+        loginButton.disabled =
+          true;
+
 
         loginButton.textContent =
           "ENTRANDO...";
@@ -871,17 +1019,21 @@
             .value
             .trim();
 
+
         const password =
-          document.getElementById("password").value;
+          document
+            .getElementById("password")
+            .value;
 
 
         const {
           data,
           error
-        } = await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
+        } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
 
 
         if (error) {
@@ -889,21 +1041,31 @@
           loginError.textContent =
             "E-mail ou senha incorretos.";
 
-          loginError.classList.remove("hidden");
+          loginError.classList.remove(
+            "hidden"
+          );
 
-          loginButton.disabled = false;
+
+          loginButton.disabled =
+            false;
 
           loginButton.textContent =
             "ENTRAR";
+
 
           return;
 
         }
 
 
-        await enterAdmin(data.session);
+        await enterAdmin(
+          data.session
+        );
 
-        loginButton.disabled = false;
+
+        loginButton.disabled =
+          false;
+
 
         loginButton.textContent =
           "ENTRAR";
@@ -937,11 +1099,15 @@
       const {
         data,
         error
-      } = await supabaseClient
-        .from("configuracoes")
-        .select("*")
-        .limit(1)
-        .maybeSingle();
+      } =
+        await supabaseClient
+          .from("configuracoes")
+          .select("*")
+          .order("id", {
+            ascending: true
+          })
+          .limit(1)
+          .maybeSingle();
 
 
       if (error) {
@@ -969,19 +1135,33 @@
       }
 
 
-      document.getElementById("intervalo").value =
+      document.getElementById(
+        "intervalo"
+      ).value =
         data.intervalo_powerbi ?? 150;
 
-      document.getElementById("reload").value =
+
+      document.getElementById(
+        "reload"
+      ).value =
         data.reload_horas ?? 4;
 
-      document.getElementById("mensagem").value =
+
+      document.getElementById(
+        "mensagem"
+      ).value =
         data.mensagem ?? "";
 
-      document.getElementById("calendario").checked =
+
+      document.getElementById(
+        "calendario"
+      ).checked =
         data.calendario ?? true;
 
-      document.getElementById("relogio").checked =
+
+      document.getElementById(
+        "relogio"
+      ).checked =
         data.relogio ?? true;
 
     }
@@ -1003,27 +1183,49 @@
 
       const intervalo =
         parseInt(
-          document.getElementById("intervalo").value,
+          document
+            .getElementById("intervalo")
+            .value,
           10
         );
+
 
       const reload =
         parseInt(
-          document.getElementById("reload").value,
+          document
+            .getElementById("reload")
+            .value,
           10
         );
 
+
       const mensagem =
-        document.getElementById("mensagem").value;
+        document
+          .getElementById("mensagem")
+          .value
+          .trim();
+
 
       const calendario =
-        document.getElementById("calendario").checked;
+        document
+          .getElementById("calendario")
+          .checked;
+
 
       const relogio =
-        document.getElementById("relogio").checked;
+        document
+          .getElementById("relogio")
+          .checked;
 
 
-      if (!intervalo || intervalo < 5) {
+      /* =========================
+         VALIDAÇÃO
+      ========================= */
+
+      if (
+        !intervalo ||
+        intervalo < 5
+      ) {
 
         showStatus(
           "O intervalo mínimo é 5 segundos.",
@@ -1035,7 +1237,10 @@
       }
 
 
-      if (!reload || reload < 1) {
+      if (
+        !reload ||
+        reload < 1
+      ) {
 
         showStatus(
           "O reload mínimo é 1 hora.",
@@ -1047,14 +1252,22 @@
       }
 
 
+      /* =========================
+         LOCALIZAR CONFIGURAÇÃO
+      ========================= */
+
       const {
         data: existing,
         error: selectError
-      } = await supabaseClient
-        .from("configuracoes")
-        .select("id")
-        .limit(1)
-        .maybeSingle();
+      } =
+        await supabaseClient
+          .from("configuracoes")
+          .select("id")
+          .order("id", {
+            ascending: true
+          })
+          .limit(1)
+          .maybeSingle();
 
 
       if (selectError) {
@@ -1073,33 +1286,74 @@
       let result;
 
 
+      /* =========================
+         ATUALIZAR
+      ========================= */
+
       if (existing) {
 
-        result = await supabaseClient
-          .from("configuracoes")
-          .update({
-            intervalo_powerbi: intervalo,
-            reload_horas: reload,
-            mensagem: mensagem,
-            calendario: calendario,
-            relogio: relogio
-          })
-          .eq("id", existing.id);
+        result =
+          await supabaseClient
+            .from("configuracoes")
+            .update({
+
+              intervalo_powerbi:
+                intervalo,
+
+              reload_horas:
+                reload,
+
+              mensagem:
+                mensagem,
+
+              calendario:
+                calendario,
+
+              relogio:
+                relogio
+
+            })
+            .eq(
+              "id",
+              existing.id
+            );
+
 
       } else {
 
-        result = await supabaseClient
-          .from("configuracoes")
-          .insert({
-            intervalo_powerbi: intervalo,
-            reload_horas: reload,
-            mensagem: mensagem,
-            calendario: calendario,
-            relogio: relogio
-          });
+
+        /* =========================
+           CRIAR
+        ========================= */
+
+        result =
+          await supabaseClient
+            .from("configuracoes")
+            .insert({
+
+              intervalo_powerbi:
+                intervalo,
+
+              reload_horas:
+                reload,
+
+              mensagem:
+                mensagem,
+
+              calendario:
+                calendario,
+
+              relogio:
+                relogio
+
+            });
 
       }
 
+
+      /* =========================
+         VERIFICAR ERRO
+      ========================= */
 
       if (result.error) {
 
@@ -1118,6 +1372,14 @@
         "Configurações salvas com sucesso!"
       );
 
+
+      /*
+       * Recarrega os dados do banco
+       * para confirmar que foram salvos.
+       */
+
+      await loadSettings();
+
     }
 
 
@@ -1134,12 +1396,13 @@
       const {
         data,
         error
-      } = await supabaseClient
-        .from("telas_powerbi")
-        .select("*")
-        .order("ordem", {
-          ascending: true
-        });
+      } =
+        await supabaseClient
+          .from("telas_powerbi")
+          .select("*")
+          .order("ordem", {
+            ascending: true
+          });
 
 
       if (error) {
@@ -1147,35 +1410,46 @@
         screenList.innerHTML =
           '<div class="empty">Erro ao carregar telas.</div>';
 
+
         showStatus(
           "Erro: " +
           error.message,
           "error"
         );
 
+
         return;
 
       }
 
 
-      if (!data || data.length === 0) {
+      if (
+        !data ||
+        data.length === 0
+      ) {
 
         screenList.innerHTML =
           '<div class="empty">Nenhuma tela cadastrada.</div>';
 
+
         return;
 
       }
 
 
-      screenList.innerHTML = "";
+      screenList.innerHTML =
+        "";
 
 
-      data.forEach(screen => {
+      data.forEach(
+        screen => {
 
-        createScreenRow(screen);
+          createScreenRow(
+            screen
+          );
 
-      });
+        }
+      );
 
     }
 
@@ -1184,14 +1458,24 @@
        CRIAR LINHA DE TELA
     ========================================================== */
 
-    function createScreenRow(screen) {
+    function createScreenRow(
+      screen
+    ) {
 
       const row =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       row.className =
         "screen-row" +
-        (!screen.ativo ? " inactive" : "");
+        (
+          !screen.ativo
+            ? " inactive"
+            : ""
+        );
+
 
       row.dataset.id =
         screen.id;
@@ -1205,31 +1489,35 @@
 
         <div class="screen-field">
 
-          <label>NOME</label>
+          <label>
+            NOME
+          </label>
 
           <input
             type="text"
             class="screen-name"
-            value="${escapeHtml(screen.nome || "")}"
           >
 
         </div>
 
         <div class="screen-field">
 
-          <label>URL POWER BI</label>
+          <label>
+            URL POWER BI
+          </label>
 
           <input
             type="text"
             class="screen-url"
-            value="${escapeHtml(screen.url || "")}"
           >
 
         </div>
 
         <div class="screen-field">
 
-          <label>ORDEM</label>
+          <label>
+            ORDEM
+          </label>
 
           <input
             type="number"
@@ -1248,15 +1536,16 @@
             ${screen.ativo ? "checked" : ""}
           >
 
-          <span>ATIVA</span>
+          <span>
+            ATIVA
+          </span>
 
         </div>
 
         <div class="screen-actions">
 
           <button
-            class="btn-danger delete-screen"
-          >
+            class="btn-danger delete-screen">
             🗑️ Excluir
           </button>
 
@@ -1265,8 +1554,30 @@
       `;
 
 
+      /* =========================
+         PREENCHER CAMPOS
+      ========================= */
+
+      row.querySelector(
+        ".screen-name"
+      ).value =
+        screen.nome || "";
+
+
+      row.querySelector(
+        ".screen-url"
+      ).value =
+        screen.url || "";
+
+
+      /* =========================
+         CHECKBOX
+      ========================= */
+
       const activeCheckbox =
-        row.querySelector(".screen-active");
+        row.querySelector(
+          ".screen-active"
+        );
 
 
       activeCheckbox.addEventListener(
@@ -1282,34 +1593,29 @@
       );
 
 
+      /* =========================
+         EXCLUIR
+      ========================= */
+
       row
-        .querySelector(".delete-screen")
+        .querySelector(
+          ".delete-screen"
+        )
         .addEventListener(
           "click",
           function() {
 
-            deleteScreen(screen.id);
+            deleteScreen(
+              screen.id
+            );
 
           }
         );
 
 
-      screenList.appendChild(row);
-
-    }
-
-
-    /* ==========================================================
-       ESCAPAR HTML
-    ========================================================== */
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+      screenList.appendChild(
+        row
+      );
 
     }
 
@@ -1329,10 +1635,14 @@
     async function saveScreens() {
 
       const rows =
-        document.querySelectorAll(".screen-row");
+        document.querySelectorAll(
+          ".screen-row"
+        );
 
 
-      if (rows.length === 0) {
+      if (
+        rows.length === 0
+      ) {
 
         showStatus(
           "Não há telas para salvar.",
@@ -1347,49 +1657,71 @@
       const updates = [];
 
 
-      rows.forEach(row => {
+      rows.forEach(
+        row => {
 
-        const id =
-          row.dataset.id;
+          const id =
+            row.dataset.id;
 
-        const nome =
-          row
-            .querySelector(".screen-name")
-            .value
-            .trim();
 
-        const url =
-          row
-            .querySelector(".screen-url")
-            .value
-            .trim();
-
-        const ordem =
-          parseInt(
+          const nome =
             row
-              .querySelector(".screen-order-input")
-              .value,
-            10
-          );
-
-        const ativo =
-          row
-            .querySelector(".screen-active")
-            .checked;
+              .querySelector(
+                ".screen-name"
+              )
+              .value
+              .trim();
 
 
-        updates.push({
-          id,
-          nome,
-          url,
-          ordem,
-          ativo
-        });
-
-      });
+          const url =
+            row
+              .querySelector(
+                ".screen-url"
+              )
+              .value
+              .trim();
 
 
-      for (const screen of updates) {
+          const ordem =
+            parseInt(
+              row
+                .querySelector(
+                  ".screen-order-input"
+                )
+                .value,
+              10
+            );
+
+
+          const ativo =
+            row
+              .querySelector(
+                ".screen-active"
+              )
+              .checked;
+
+
+          updates.push({
+
+            id,
+            nome,
+            url,
+            ordem,
+            ativo
+
+          });
+
+        }
+      );
+
+
+      /* =========================
+         VALIDAÇÃO
+      ========================= */
+
+      for (
+        const screen of updates
+      ) {
 
         if (!screen.nome) {
 
@@ -1415,7 +1747,10 @@
         }
 
 
-        if (!screen.ordem || screen.ordem < 1) {
+        if (
+          !screen.ordem ||
+          screen.ordem < 1
+        ) {
 
           showStatus(
             "A ordem precisa ser maior que zero.",
@@ -1429,19 +1764,38 @@
       }
 
 
-      for (const screen of updates) {
+      /* =========================
+         ATUALIZAR CADA TELA
+      ========================= */
+
+      for (
+        const screen of updates
+      ) {
 
         const {
           error
-        } = await supabaseClient
-          .from("telas_powerbi")
-          .update({
-            nome: screen.nome,
-            url: screen.url,
-            ordem: screen.ordem,
-            ativo: screen.ativo
-          })
-          .eq("id", screen.id);
+        } =
+          await supabaseClient
+            .from("telas_powerbi")
+            .update({
+
+              nome:
+                screen.nome,
+
+              url:
+                screen.url,
+
+              ordem:
+                screen.ordem,
+
+              ativo:
+                screen.ativo
+
+            })
+            .eq(
+              "id",
+              screen.id
+            );
 
 
         if (error) {
@@ -1486,14 +1840,15 @@
       const {
         data,
         error
-      } = await supabaseClient
-        .from("telas_powerbi")
-        .select("ordem")
-        .order("ordem", {
-          ascending: false
-        })
-        .limit(1)
-        .maybeSingle();
+      } =
+        await supabaseClient
+          .from("telas_powerbi")
+          .select("ordem")
+          .order("ordem", {
+            ascending: false
+          })
+          .limit(1)
+          .maybeSingle();
 
 
       if (error) {
@@ -1517,14 +1872,24 @@
 
       const {
         error: insertError
-      } = await supabaseClient
-        .from("telas_powerbi")
-        .insert({
-          nome: "Nova Tela",
-          url: "",
-          ordem: nextOrder,
-          ativo: true
-        });
+      } =
+        await supabaseClient
+          .from("telas_powerbi")
+          .insert({
+
+            nome:
+              "Nova Tela",
+
+            url:
+              "",
+
+            ordem:
+              nextOrder,
+
+            ativo:
+              true
+
+          });
 
 
       if (insertError) {
@@ -1554,7 +1919,9 @@
        EXCLUIR TELA
     ========================================================== */
 
-    async function deleteScreen(id) {
+    async function deleteScreen(
+      id
+    ) {
 
       const confirmed =
         confirm(
@@ -1563,16 +1930,22 @@
 
 
       if (!confirmed) {
+
         return;
+
       }
 
 
       const {
         error
-      } = await supabaseClient
-        .from("telas_powerbi")
-        .delete()
-        .eq("id", id);
+      } =
+        await supabaseClient
+          .from("telas_powerbi")
+          .delete()
+          .eq(
+            "id",
+            id
+          );
 
 
       if (error) {
@@ -1599,15 +1972,20 @@
 
 
     /* ==========================================================
-       MONITORAR ALTERAÇÕES DE LOGIN
+       MONITORAR LOGIN
     ========================================================== */
 
     supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
+      async (
+        event,
+        session
+      ) => {
 
         if (session) {
 
-          await enterAdmin(session);
+          await enterAdmin(
+            session
+          );
 
         } else {
 

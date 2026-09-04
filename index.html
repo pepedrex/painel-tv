@@ -178,11 +178,20 @@
 
 <body>
 
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <h2 id="month-year"></h2>
-    <div class="calendar" id="calendar"></div>
-    <div class="holiday-note" id="holiday-note"></div>
+
+    <div
+      class="calendar"
+      id="calendar">
+    </div>
+
+    <div
+      class="holiday-note"
+      id="holiday-note">
+    </div>
   </div>
+
 
   <iframe
     id="frame"
@@ -190,30 +199,53 @@
     title="Painel Power BI">
   </iframe>
 
+
   <div id="status"></div>
 
+
   <div class="ticker">
+
     <div class="left">
-      <div class="live">ATENÇÃO</div>
 
-      <div class="headline">
-        Adriano vai perder a aposta amanhã.
+      <div class="live">
+        ATENÇÃO
       </div>
+
+      <div
+        class="headline"
+        id="headline">
+        Carregando mensagem...
+      </div>
+
     </div>
 
-    <div class="right">
+
+    <div
+      class="right"
+      id="clock-container">
+
       <div>
-        <span class="icon">🕒</span>
-        <span id="clock">--:--</span>
+
+        <span class="icon">
+          🕒
+        </span>
+
+        <span id="clock">
+          --:--
+        </span>
+
       </div>
+
     </div>
+
   </div>
 
 
   <script>
+
     /* =========================================================
-       CONFIGURAÇÃO DO SUPABASE
-       ========================================================= */
+       SUPABASE
+    ========================================================= */
 
     const SUPABASE_URL =
       "https://rgfcgdbtzsmidxllfqpx.supabase.co";
@@ -223,219 +255,26 @@
 
 
     /* =========================================================
-       CONFIGURAÇÃO DO PAINEL
-       ========================================================= */
+       ELEMENTOS
+    ========================================================= */
 
-    // 150000 ms = 150 segundos = 2 minutos e 30 segundos
-    const intervalo = 150000;
+    const iframe =
+      document.getElementById("frame");
 
-    // Recarrega a página a cada 4 horas
-    const tempoReload = 1000 * 60 * 60 * 4;
+    const status =
+      document.getElementById("status");
 
-    let telas = [];
-    let indiceAtual = 0;
+    const sidebar =
+      document.getElementById("sidebar");
 
-    const iframe = document.getElementById("frame");
-    const status = document.getElementById("status");
+    const headline =
+      document.getElementById("headline");
 
+    const clockContainer =
+      document.getElementById("clock-container");
 
-    /* =========================================================
-       STATUS
-       ========================================================= */
-
-    function mostrarStatus(mensagem) {
-      status.textContent = mensagem;
-      status.style.display = "block";
-    }
-
-    function esconderStatus() {
-      status.style.display = "none";
-    }
-
-
-    /* =========================================================
-       BUSCAR TELAS NO SUPABASE
-       ========================================================= */
-
-    async function carregarTelas() {
-
-      try {
-
-        mostrarStatus("Carregando telas...");
-
-        const url =
-          SUPABASE_URL +
-          "/rest/v1/telas_powerbi" +
-          "?select=id,nome,url,ordem,ativo" +
-          "&ativo=eq.true" +
-          "&order=ordem.asc";
-
-
-        const resposta = await fetch(url, {
-          method: "GET",
-
-          headers: {
-            "apikey": SUPABASE_KEY,
-            "Authorization": "Bearer " + SUPABASE_KEY,
-            "Accept": "application/json"
-          }
-        });
-
-
-        if (!resposta.ok) {
-
-          const erroTexto = await resposta.text();
-
-          throw new Error(
-            "Erro Supabase: " +
-            resposta.status +
-            " - " +
-            erroTexto
-          );
-        }
-
-
-        const dados = await resposta.json();
-
-
-        if (!Array.isArray(dados) || dados.length === 0) {
-
-          throw new Error(
-            "Nenhuma tela ativa foi encontrada na tabela telas_powerbi."
-          );
-        }
-
-
-        // Guarda somente registros válidos
-        telas = dados
-          .filter(tela =>
-            tela.url &&
-            tela.url.trim() !== ""
-          )
-          .sort((a, b) =>
-            Number(a.ordem) - Number(b.ordem)
-          );
-
-
-        if (telas.length === 0) {
-
-          throw new Error(
-            "As telas foram encontradas, mas nenhuma possui uma URL válida."
-          );
-        }
-
-
-        console.log("Telas carregadas do Supabase:", telas);
-
-
-        esconderStatus();
-
-        // Começa pela primeira tela
-        indiceAtual = 0;
-
-        iframe.src = telas[indiceAtual].url;
-
-
-        console.log(
-          "Abrindo:",
-          telas[indiceAtual].nome,
-          telas[indiceAtual].url
-        );
-
-
-        // Inicia a troca automática
-        if (telas.length > 1) {
-
-          setInterval(proximaTela, intervalo);
-
-        }
-
-      } catch (erro) {
-
-        console.error("Erro ao carregar telas:", erro);
-
-        mostrarStatus(
-          "Não foi possível carregar as telas do Power BI.<br><br>" +
-          "Verifique o Supabase e a política de leitura."
-        );
-      }
-    }
-
-
-    /* =========================================================
-       TROCAR DE TELA
-       ========================================================= */
-
-    function proximaTela() {
-
-      if (telas.length <= 1) {
-        return;
-      }
-
-
-      indiceAtual++;
-
-      if (indiceAtual >= telas.length) {
-        indiceAtual = 0;
-      }
-
-
-      const telaAtual = telas[indiceAtual];
-
-
-      console.log(
-        "Trocando para:",
-        telaAtual.nome,
-        telaAtual.url
-      );
-
-
-      iframe.src = telaAtual.url;
-    }
-
-
-    /* =========================================================
-       RECARREGAR A PÁGINA A CADA 4 HORAS
-       ========================================================= */
-
-    setTimeout(() => {
-
-      location.reload();
-
-    }, tempoReload);
-
-
-    /* =========================================================
-       RELÓGIO
-       ========================================================= */
-
-    function atualizarHora() {
-
-      const agora = new Date();
-
-      const horas =
-        agora.getHours()
-          .toString()
-          .padStart(2, "0");
-
-      const minutos =
-        agora.getMinutes()
-          .toString()
-          .padStart(2, "0");
-
-      document.getElementById("clock").textContent =
-        `${horas}:${minutos}`;
-    }
-
-
-    setInterval(atualizarHora, 1000);
-
-    atualizarHora();
-
-
-    /* =========================================================
-       CALENDÁRIO
-       ========================================================= */
+    const clock =
+      document.getElementById("clock");
 
     const calendar =
       document.getElementById("calendar");
@@ -446,90 +285,749 @@
     const holidayNote =
       document.getElementById("holiday-note");
 
-    const today = new Date();
 
-    const month = today.getMonth();
+    /* =========================================================
+       VARIÁVEIS
+    ========================================================= */
 
-    const year = today.getFullYear();
+    let telas = [];
 
+    let indiceAtual = 0;
 
-    const monthNames = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro"
-    ];
+    let configuracaoAtual = null;
 
+    let rotationTimer = null;
 
-    monthYear.textContent =
-      `${monthNames[month]} ${year}`;
-
-
-    const firstDay =
-      new Date(year, month, 1).getDay();
-
-    const lastDate =
-      new Date(year, month + 1, 0).getDate();
-
-
-    // Dia marcado no calendário
-    const holidayDay = 12;
-
-
-    // Espaços antes do primeiro dia
-    for (let i = 0; i < firstDay; i++) {
-
-      const empty =
-        document.createElement("div");
-
-      calendar.appendChild(empty);
-    }
-
-
-    // Dias do mês
-    for (let day = 1; day <= lastDate; day++) {
-
-      const div =
-        document.createElement("div");
-
-      div.textContent = day;
-
-
-      // Hoje
-      if (day === today.getDate()) {
-
-        div.classList.add("today");
-      }
-
-
-      // Feriado/destaque
-      if (day === holidayDay) {
-
-        div.classList.add("holiday");
-      }
-
-
-      calendar.appendChild(div);
-    }
-
-
-    holidayNote.textContent =
-      `Dia ${holidayDay} teste de marcação de data.`;
+    let reloadTimer = null;
 
 
     /* =========================================================
-       INICIAR
-       ========================================================= */
+       STATUS
+    ========================================================= */
 
-    carregarTelas();
+    function mostrarStatus(mensagem) {
+
+      status.innerHTML = mensagem;
+
+      status.style.display = "block";
+
+    }
+
+
+    function esconderStatus() {
+
+      status.style.display = "none";
+
+    }
+
+
+    /* =========================================================
+       BUSCAR DADOS DO SUPABASE
+    ========================================================= */
+
+    async function supabaseGet(endpoint) {
+
+      const resposta =
+        await fetch(
+          SUPABASE_URL +
+          "/rest/v1/" +
+          endpoint,
+          {
+            method: "GET",
+
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization":
+                "Bearer " + SUPABASE_KEY,
+              "Accept":
+                "application/json"
+            }
+          }
+        );
+
+
+      if (!resposta.ok) {
+
+        const texto =
+          await resposta.text();
+
+        throw new Error(
+          "Supabase " +
+          resposta.status +
+          ": " +
+          texto
+        );
+
+      }
+
+
+      return await resposta.json();
+
+    }
+
+
+    /* =========================================================
+       CARREGAR CONFIGURAÇÕES
+    ========================================================= */
+
+    async function carregarConfiguracoes() {
+
+      try {
+
+        const dados =
+          await supabaseGet(
+            "configuracoes" +
+            "?select=id,intervalo_powerbi,reload_horas,mensagem,calendario,relogio" +
+            "&limit=1"
+          );
+
+
+        if (
+          !Array.isArray(dados) ||
+          dados.length === 0
+        ) {
+
+          throw new Error(
+            "Nenhuma configuração encontrada."
+          );
+
+        }
+
+
+        const novaConfiguracao =
+          dados[0];
+
+
+        const intervaloAnterior =
+          configuracaoAtual
+            ? Number(
+                configuracaoAtual.intervalo_powerbi
+              )
+            : null;
+
+
+        const reloadAnterior =
+          configuracaoAtual
+            ? Number(
+                configuracaoAtual.reload_horas
+              )
+            : null;
+
+
+        const intervaloAtual =
+          Number(
+            novaConfiguracao.intervalo_powerbi
+          );
+
+
+        const reloadAtual =
+          Number(
+            novaConfiguracao.reload_horas
+          );
+
+
+        configuracaoAtual =
+          novaConfiguracao;
+
+
+        /* =====================================================
+           MENSAGEM
+        ===================================================== */
+
+        headline.textContent =
+          novaConfiguracao.mensagem ||
+          "";
+
+
+        /* =====================================================
+           CALENDÁRIO
+        ===================================================== */
+
+        if (novaConfiguracao.calendario) {
+
+          sidebar.style.display = "flex";
+
+          iframe.style.marginLeft = "280px";
+
+          iframe.style.width =
+            "calc(100vw - 280px)";
+
+        } else {
+
+          sidebar.style.display = "none";
+
+          iframe.style.marginLeft = "0";
+
+          iframe.style.width =
+            "100vw";
+
+        }
+
+
+        /* =====================================================
+           RELÓGIO
+        ===================================================== */
+
+        if (novaConfiguracao.relogio) {
+
+          clockContainer.style.display =
+            "flex";
+
+        } else {
+
+          clockContainer.style.display =
+            "none";
+
+        }
+
+
+        /* =====================================================
+           ROTAÇÃO
+        ===================================================== */
+
+        if (
+          intervaloAnterior === null ||
+          intervaloAnterior !== intervaloAtual
+        ) {
+
+          iniciarRotacao();
+
+        }
+
+
+        /* =====================================================
+           RELOAD
+        ===================================================== */
+
+        if (
+          reloadAnterior === null ||
+          reloadAnterior !== reloadAtual
+        ) {
+
+          iniciarReload();
+
+        }
+
+
+        console.log(
+          "Configurações carregadas:",
+          novaConfiguracao
+        );
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar configurações:",
+          erro
+        );
+
+        /*
+         * Não derruba a TV se o Supabase
+         * estiver temporariamente indisponível.
+         */
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CARREGAR TELAS
+    ========================================================= */
+
+    async function carregarTelas() {
+
+      try {
+
+        mostrarStatus(
+          "Carregando telas..."
+        );
+
+
+        const dados =
+          await supabaseGet(
+            "telas_powerbi" +
+            "?select=id,nome,url,ordem,ativo" +
+            "&ativo=eq.true" +
+            "&order=ordem.asc"
+          );
+
+
+        if (
+          !Array.isArray(dados) ||
+          dados.length === 0
+        ) {
+
+          throw new Error(
+            "Nenhuma tela ativa foi encontrada."
+          );
+
+        }
+
+
+        telas =
+          dados
+            .filter(tela =>
+              tela.url &&
+              tela.url.trim() !== ""
+            )
+            .sort((a, b) =>
+              Number(a.ordem) -
+              Number(b.ordem)
+            );
+
+
+        if (telas.length === 0) {
+
+          throw new Error(
+            "Nenhuma tela possui uma URL válida."
+          );
+
+        }
+
+
+        console.log(
+          "Telas carregadas:",
+          telas
+        );
+
+
+        indiceAtual = 0;
+
+
+        iframe.src =
+          telas[indiceAtual].url;
+
+
+        console.log(
+          "Abrindo:",
+          telas[indiceAtual].nome
+        );
+
+
+        esconderStatus();
+
+
+        iniciarRotacao();
+
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar telas:",
+          erro
+        );
+
+
+        mostrarStatus(
+          "Não foi possível carregar as telas do Power BI.<br><br>" +
+          "Verifique o Supabase e as URLs."
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       INICIAR ROTAÇÃO
+    ========================================================= */
+
+    function iniciarRotacao() {
+
+      if (rotationTimer) {
+
+        clearInterval(
+          rotationTimer
+        );
+
+        rotationTimer = null;
+
+      }
+
+
+      if (!configuracaoAtual) {
+
+        return;
+
+      }
+
+
+      if (telas.length <= 1) {
+
+        return;
+
+      }
+
+
+      const segundos =
+        Number(
+          configuracaoAtual.intervalo_powerbi
+        );
+
+
+      if (
+        !Number.isFinite(segundos) ||
+        segundos <= 0
+      ) {
+
+        console.error(
+          "Intervalo inválido:",
+          segundos
+        );
+
+        return;
+
+      }
+
+
+      console.log(
+        "Rotação configurada para:",
+        segundos,
+        "segundos"
+      );
+
+
+      rotationTimer =
+        setInterval(
+          proximaTela,
+          segundos * 1000
+        );
+
+    }
+
+
+    /* =========================================================
+       PRÓXIMA TELA
+    ========================================================= */
+
+    function proximaTela() {
+
+      if (telas.length <= 1) {
+
+        return;
+
+      }
+
+
+      indiceAtual++;
+
+
+      if (
+        indiceAtual >= telas.length
+      ) {
+
+        indiceAtual = 0;
+
+      }
+
+
+      const telaAtual =
+        telas[indiceAtual];
+
+
+      console.log(
+        "Trocando para:",
+        telaAtual.nome
+      );
+
+
+      iframe.src =
+        telaAtual.url;
+
+    }
+
+
+    /* =========================================================
+       RELOAD AUTOMÁTICO
+    ========================================================= */
+
+    function iniciarReload() {
+
+      if (reloadTimer) {
+
+        clearTimeout(
+          reloadTimer
+        );
+
+        reloadTimer = null;
+
+      }
+
+
+      if (!configuracaoAtual) {
+
+        return;
+
+      }
+
+
+      const horas =
+        Number(
+          configuracaoAtual.reload_horas
+        );
+
+
+      if (
+        !Number.isFinite(horas) ||
+        horas <= 0
+      ) {
+
+        console.error(
+          "Tempo de reload inválido:",
+          horas
+        );
+
+        return;
+
+      }
+
+
+      console.log(
+        "Reload configurado para:",
+        horas,
+        "horas"
+      );
+
+
+      reloadTimer =
+        setTimeout(
+          () => {
+
+            location.reload();
+
+          },
+          horas *
+          60 *
+          60 *
+          1000
+        );
+
+    }
+
+
+    /* =========================================================
+       RELÓGIO
+    ========================================================= */
+
+    function atualizarHora() {
+
+      const agora =
+        new Date();
+
+
+      const horas =
+        agora
+          .getHours()
+          .toString()
+          .padStart(2, "0");
+
+
+      const minutos =
+        agora
+          .getMinutes()
+          .toString()
+          .padStart(2, "0");
+
+
+      clock.textContent =
+        `${horas}:${minutos}`;
+
+    }
+
+
+    setInterval(
+      atualizarHora,
+      1000
+    );
+
+
+    atualizarHora();
+
+
+    /* =========================================================
+       CALENDÁRIO
+    ========================================================= */
+
+    function montarCalendario() {
+
+      calendar.innerHTML = "";
+
+
+      const hoje =
+        new Date();
+
+
+      const mes =
+        hoje.getMonth();
+
+
+      const ano =
+        hoje.getFullYear();
+
+
+      const monthNames = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+      ];
+
+
+      monthYear.textContent =
+        `${monthNames[mes]} ${ano}`;
+
+
+      const firstDay =
+        new Date(
+          ano,
+          mes,
+          1
+        ).getDay();
+
+
+      const lastDate =
+        new Date(
+          ano,
+          mes + 1,
+          0
+        ).getDate();
+
+
+      /*
+       * Mantido conforme seu calendário atual.
+       * Dia 12 é o destaque vermelho.
+       */
+
+      const holidayDay = 12;
+
+
+      for (
+        let i = 0;
+        i < firstDay;
+        i++
+      ) {
+
+        const empty =
+          document.createElement("div");
+
+        calendar.appendChild(
+          empty
+        );
+
+      }
+
+
+      for (
+        let day = 1;
+        day <= lastDate;
+        day++
+      ) {
+
+        const div =
+          document.createElement("div");
+
+
+        div.textContent =
+          day;
+
+
+        if (
+          day === hoje.getDate()
+        ) {
+
+          div.classList.add(
+            "today"
+          );
+
+        }
+
+
+        if (
+          day === holidayDay
+        ) {
+
+          div.classList.add(
+            "holiday"
+          );
+
+        }
+
+
+        calendar.appendChild(
+          div
+        );
+
+      }
+
+
+      holidayNote.textContent =
+        `Dia ${holidayDay} teste de marcação de data.`;
+
+    }
+
+
+    /* =========================================================
+       VERIFICAR ALTERAÇÕES DO ADMIN
+    ========================================================= */
+
+    async function verificarConfiguracoes() {
+
+      await carregarConfiguracoes();
+
+    }
+
+
+    /*
+     * Verifica o Supabase a cada 30 segundos.
+     *
+     * Assim, se você alterar:
+     *
+     * 150 → 30 segundos
+     *
+     * a TV passa a usar 30 segundos.
+     */
+
+    setInterval(
+      verificarConfiguracoes,
+      30000
+    );
+
+
+    /* =========================================================
+       INICIALIZAÇÃO
+    ========================================================= */
+
+    async function iniciarPainel() {
+
+      montarCalendario();
+
+
+      /*
+       * Primeiro carrega as configurações.
+       */
+
+      await carregarConfiguracoes();
+
+
+      /*
+       * Depois carrega as telas.
+       */
+
+      await carregarTelas();
+
+    }
+
+
+    iniciarPainel();
 
   </script>
 
